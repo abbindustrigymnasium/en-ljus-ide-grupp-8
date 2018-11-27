@@ -3,7 +3,7 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const lightRoutes = require('./api/routes/light');
+const grupp8Routes = require('./grupp-8');
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 // Routes which should handle requests
-app.use('/light', lightRoutes);
+app.use('/grupp-8', grupp8Routes);
 
 app.use((req, res, next) => {
     const error = new Error('Not found');
