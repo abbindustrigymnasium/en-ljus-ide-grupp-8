@@ -9,9 +9,9 @@
 #include <WiFiManager.h>   
 #include <ArduinoJson.h> //https://github.com/tzapu/WiFiManager // inkluderar de libraries vi laddat ned
 
-String Lampname="lamp";
+String Lampname="Lars";
 int Lamptemp=0;
-int Strenghtvalue=0;
+int strengthvalue=0;
 bool LampExist=false;
 bool OnOff=false;
 bool GottenValues= false; //sätter variablar där vi i vissa fall vill ha någonting att gå efter och i vissa fall t.ex. inte vill skriva "lamp" överallt om vi skulle vilja ändra
@@ -20,13 +20,13 @@ String SendtoDB(String host){
  String type ="POST ";  //Väljer att datan är av typen POST
  if(GottenValues==true)
  {
- String url= "/lights/"; //väljer att vi ska skriva lights vilket är namnet på backenden i url:en
+ String url= "/grupp-8/"; //väljer att vi ska skriva lights vilket är namnet på backenden i url:en
  Serial.println("Skickar värde första gången");
  StaticJsonBuffer<300> jsonBuffer; //Skapar en buffert som sparar undan 300Mb så att inte mängden data som skickas in i mikrodatorn överstigen den mängd som den klarar
  JsonObject& root = jsonBuffer.createObject(); // sparar bufferten som json-objekt också så att vi kan läsa den
  root["name"] = Lampname; 
  root["lighttemperature"] = Lamptemp;
- root["lightstrenght"] = Strenghtvalue; //Säger att t.ex. Lampnamn är det som heter "name" i databasen
+ root["lightstrength"] = strengthvalue; //Säger att t.ex. Lampnamn är det som heter "name" i databasen
  root["onoff"] = OnOff;
  String buffer; 
  root.printTo(buffer); 
@@ -37,23 +37,23 @@ String SendtoDB(String host){
  }
 
  String Output =type+url + " HTTP/1.1\r\n" + 
- "Host: " + host+ "\r\n" + 
+ "Host" + host + "\r\n" + 
  "Content-Type: application/json\r\n" + 
  "Content-Length: " + buffer.length() + "\r\n" +
  "\r\n" + 
  buffer + "\n"; 
 return Output; 
  }
- else
+ else  
  return ""; //skriver in vilka som type, hosat och lenght i url:en
 }
 
 String GetfromDB(String host){
-String url= "/lights/"+Lampname; 
+String url= "/grupp-8/"+Lampname; 
  String Output ="GET "+ url + " HTTP/1.1\r\n" +
  "Host: " + host+ "\r\n" + 
  "\r\nConnection: close\r\n\r\n"; 
-return Output; //?????
+return Output; //skriver in rätt saker i url:en och returnerar det som finns på databasen
 }
 
  void UpdateValues(String json){
@@ -62,10 +62,10 @@ return Output; //?????
   String dataL=root["name"];
   if(dataL!="none") {
     int datat = root["lighttemperature"];
-    int datas = root["lightstrenght"];
+    int datas = root["lightstrength"];
     Lampname=dataL;
     Lamptemp=datat;
-    Strenghtvalue=datas;
+    strengthvalue=datas;
     LampExist=true; 
   } else {
     String Mess=root["message"];
@@ -76,8 +76,8 @@ return Output; //?????
   
  void ConnecttoDB(String input){
 
-      const int httpPort=3000;
-      const char*host="iot.abbindustrigymnasium.se"; //databasen på iot servern
+      const int httpPort=3001;
+      const char * host="iot.abbindustrigymnasium.se"; //databasen på iot servern
       Serial.print("connecting to ");
       Serial.println(host);
 
@@ -120,10 +120,10 @@ while (client.available()) {
  }   
 
 void UpdatingLamp(){
-  if(OnOff=true)
+  if(OnOff==true)
   digitalWrite(13, HIGH);
   else
-  digitalWrite(13, LOW); //En funktion som används för att tända lampan då om OnOff är på
+  digitalWrite(13, LOW); //En funktion som används för att tända lampan då om OnOff är sann
 }
  
 void setup() {
@@ -152,4 +152,5 @@ void loop() {
     delay(1000);
    }
  
+
 
