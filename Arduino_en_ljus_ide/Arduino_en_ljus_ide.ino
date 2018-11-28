@@ -1,4 +1,5 @@
 #define D7 13 //Bestämmer vilka pinnar vi ska arbeta på
+#define D6 12
 
 
 #include <ESP8266WiFi.h>   //https://github.com/esp8266/Arduino
@@ -13,7 +14,7 @@ String Lampname="Lars";
 int Lamptemp=0;
 int strengthvalue=0;
 bool LampExist=false;
-bool OnOff=false;
+int OnOff=0;
 bool GottenValues= false; //sätter variablar där vi i vissa fall vill ha någonting att gå efter och i vissa fall t.ex. inte vill skriva "lamp" överallt om vi skulle vilja ändra
 
 String SendtoDB(String host){
@@ -45,7 +46,7 @@ String SendtoDB(String host){
 return Output; 
  }
  else  
- return ""; //skriver in vilka som type, hosat och lenght i url:en
+ return ""; //skriver in i 
 }
 
 String GetfromDB(String host){
@@ -63,15 +64,17 @@ return Output; //skriver in rätt saker i url:en och returnerar det som finns p�
   if(dataL!="none") {
     int datat = root["lighttemperature"];
     int datas = root["lightstrength"];
-    Lampname=dataL;
+    int datao = root["onoff"];
     Lamptemp=datat;
     strengthvalue=datas;
     LampExist=true; 
+    OnOff=datao;
   } else {
     String Mess=root["message"];
     Serial.print(Mess);
   }
-  GottenValues=true;  //uppdaterar värden när vi andänder oss av typen UPDATE
+  
+  GottenValues=true;  //
   }
   
  void ConnecttoDB(String input){
@@ -90,6 +93,7 @@ return Output; //skriver in rätt saker i url:en och returnerar det som finns p�
       if(input=="GET")
       client.print(GetfromDB(host));
       else
+      
       client.print(SendtoDB(host));
         unsigned long timeout= millis(); 
         while(client.available()==0){
@@ -97,11 +101,14 @@ return Output; //skriver in rätt saker i url:en och returnerar det som finns p�
           Serial.println(">>>Client Timeout!");
           client.stop();
           return; //om vi hämtar värden och ingenting händer på 10 sekunder timear clienten ut 
-    
+        }
+        }
+        
 String json = "";
 boolean httpBody = false; 
 while (client.available()) {
- String line = client.readStringUntil('\r'); //clienten läser igenom ? tills den hittar \r och och karaktären efter är { så blir httpBody true
+ String line = client.readStringUntil('\r'); //clienten läser igenom ? tills den hittar \r och och karaktären efter inte är { så blir httpBody true
+ //Serial.println("Här är vi");
  if (!httpBody && line.charAt(1) == '{') {
  httpBody = true; 
  }
@@ -110,25 +117,29 @@ while (client.available()) {
  }
 }
  Serial.println("Got data:");
+
  Serial.println(json);
  if(input =="GET") 
  UpdateValues(json);
  Serial.println();
  Serial.println("closing connection"); //använder funktionen update values och och serial printar sådant som vi behöver veta
 }
- }
- }   
+ 
+    
 
 void UpdatingLamp(){
-  if(OnOff==true)
-  digitalWrite(13, HIGH);
+  if(OnOff==1){
+  analogWrite(13, strengthvalue*10*Lamptemp/100);
+  analogWrite(12, strengthvalue*10*(100-Lamptemp)/100);
+  }
   else
-  digitalWrite(13, LOW); //En funktion som används för att tända lampan då om OnOff är sann
+  digitalWrite(13, LOW); //En funktion som används för att tända lampan då om OnOff är 1
 }
  
 void setup() {
 
   pinMode(13, OUTPUT);
+  pinMode(12, OUTPUT);
   
 
     
@@ -152,5 +163,4 @@ void loop() {
     delay(1000);
    }
  
-
 
