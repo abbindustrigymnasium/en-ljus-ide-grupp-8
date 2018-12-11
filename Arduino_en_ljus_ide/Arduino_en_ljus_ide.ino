@@ -1,5 +1,5 @@
-#define D7 13 //Bestämmer vilka pinnar vi ska arbeta på
 #define D6 12
+#define D7 13 //Bestämmer vilka pinnar vi ska arbeta på
 #define D5 14
 #define D8 15
 
@@ -145,8 +145,8 @@ void UpdatingLamp(){
  
 void setup() {
 
-  pinMode(13, OUTPUT);
   pinMode(12, OUTPUT);
+  pinMode(13, OUTPUT);
   pinMode(14, OUTPUT);
   pinMode(15, OUTPUT);
 
