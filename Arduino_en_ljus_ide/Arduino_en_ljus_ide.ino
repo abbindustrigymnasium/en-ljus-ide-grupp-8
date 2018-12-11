@@ -1,5 +1,7 @@
 #define D7 13 //Bestämmer vilka pinnar vi ska arbeta på
 #define D6 12
+#define D5 14
+#define D8 15
 
 
 #include <ESP8266WiFi.h>   //https://github.com/esp8266/Arduino
@@ -130,17 +132,23 @@ while (client.available()) {
 void UpdatingLamp(){
   if(OnOff==1){
   analogWrite(13, strengthvalue*10*Lamptemp/100);
+  analogWrite(15, strengthvalue*10*Lamptemp/100);
   analogWrite(12, strengthvalue*10*(100-Lamptemp)/100);
+  analogWrite(14, strengthvalue*10*(100-Lamptemp)/100);
   }
   else
-  digitalWrite(13, LOW); //En funktion som används för att tända lampan då om OnOff är 1
+  digitalWrite(12, LOW);
+  digitalWrite(13, LOW);
+  digitalWrite(14, LOW);
+  digitalWrite(15, LOW);//En funktion som används för att tända lampan då om OnOff är 1
 }
  
 void setup() {
 
   pinMode(13, OUTPUT);
   pinMode(12, OUTPUT);
-  
+  pinMode(14, OUTPUT);
+  pinMode(15, OUTPUT);
 
     
     Serial.begin(115200);
