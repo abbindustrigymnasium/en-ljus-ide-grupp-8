@@ -131,10 +131,10 @@ while (client.available()) {
 
 void UpdatingLamp(){
   if(OnOff==1){
-  analogWrite(13, strengthvalue*10*Lamptemp/100);
-  analogWrite(15, strengthvalue*10*Lamptemp/100);
-  analogWrite(12, strengthvalue*10*(100-Lamptemp)/100);
-  analogWrite(14, strengthvalue*10*(100-Lamptemp)/100);
+  analogWrite(13, strengthvalue*10*Lamptemp/50);
+  analogWrite(15, strengthvalue*10*Lamptemp/50);
+  analogWrite(12, strengthvalue*10*(100-Lamptemp)/50);
+  analogWrite(14, strengthvalue*10*(100-Lamptemp)/50);
   }
   else
   digitalWrite(12, LOW);
