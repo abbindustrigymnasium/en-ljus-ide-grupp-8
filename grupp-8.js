@@ -66,7 +66,6 @@ router.get('/:lampName', (req, res) => {
 });
 
 
-
 router.post('/', (req, res, next) => {
     const light = {
         onoff: req.body.onoff,
@@ -151,15 +150,16 @@ router.patch('/:lampName', (req, res, next) => {
     });
 });
 
-/*router.post('/google_home/:lampName&:onoff', (req, res, next) => {
+router.patch('beroringsfri_styrning/:lampName', (req, res, next) => { //accepterar PATCH requests som kommer till denna url
+
     const light = {
-        onoff: req.params.onoff,
+        onoff: req.body.onoff //extraherar värdet på onoff från body:n
     }
 
     var updateLight = function(){
         return new Promise(function(resolve, reject){
 
-            con.query('UPDATE `lightstatus` SET `onoff`= ? WHERE `name` = ?',[light.onoff, req.params.lampName], function (error, results) {
+            con.query('UPDATE `lightstatus` SET `onoff`= ? WHERE `name` = ?',[light.onoff, req.params.lampName], function (error, results) { //Uppdaterar värdet på databasen
                 if (error) 
                 return reject (error);
                 else
@@ -185,20 +185,20 @@ router.patch('/:lampName', (req, res, next) => {
 
     }   ).catch(error => {
         res.status(500).json({
-            error: error
+            error: error  //felhantering
         })
     });
-});*/
+});
 
-router.post('/google_home/:lampName', (req, res, next) => {
+router.post('/google_home/:onoff', (req, res, next) => {
     const light = {
-        onoff: req.body.onoff,
+        onoff: req.params.onoff,
     }
 
     var updateLight = function(){
         return new Promise(function(resolve, reject){
 
-            con.query('UPDATE `lightstatus` SET `onoff`= ? WHERE `name` = ?',[light.onoff, req.body.lampName], function (error, results) {
+            con.query('UPDATE `lightstatus` SET `onoff`= ? WHERE `name` = ?',[light.onoff, "Lars"], function (error, results) {
                 if (error) 
                 return reject (error);
                 else
@@ -228,5 +228,6 @@ router.post('/google_home/:lampName', (req, res, next) => {
         })
     });
 });
+
 
 module.exports = router;
